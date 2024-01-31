@@ -24,6 +24,8 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -201,10 +203,17 @@ fun BillForm(
                 Text(text = "33%")
                 Spacer(modifier = Modifier.height(20.dp))
                 // Slider
-                Slider(value = sliderPositionState.value, onValueChange = { newVal ->
-                    sliderPositionState.floatValue = newVal
-                    Log.d(TAG, "New Value: $newVal")
-                })
+                Slider(
+                    modifier = Modifier.padding(start = 10.dp),
+                    value = sliderPositionState.floatValue,
+                    onValueChange = { newVal ->
+                        sliderPositionState.floatValue = newVal
+                        Log.d(TAG, "New Value: $newVal")
+                    },
+                    steps = 5,
+                    enabled = true,
+                    colors = SliderDefaults.colors(Color(0xFFFE9D7D))
+                )
             }
 //            } else {
 //                Box {}

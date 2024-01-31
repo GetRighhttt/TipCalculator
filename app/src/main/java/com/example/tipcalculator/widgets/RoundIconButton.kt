@@ -23,7 +23,7 @@ fun RoundIconButton(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
     onClick: () -> Unit,
-    tint: Color = Color.White,
+    tint: Color = Color(0xFFFE9D7D),
     backgroundColor: CardColors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onBackground),
     elevation: CardElevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
 ) {

@@ -11,9 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,10 +32,13 @@ fun DeclareInputField(
     isSingleLine: Boolean,
     keyboardType: KeyboardType = KeyboardType.Number,
     imeAction: ImeAction = ImeAction.Next, // signals next action when input is finished
-    onAction: KeyboardActions = KeyboardActions.Default
+    onAction: KeyboardActions = KeyboardActions.Default,
+    colors: TextFieldColors = TextFieldDefaults.colors(Color(0xFF330E01))
 ) {
     OutlinedTextField(
-        modifier = modifier.padding(bottom = 10.dp, start = 10.dp, end = 10.dp).fillMaxWidth(),
+        modifier = modifier
+            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .fillMaxWidth(),
         value = valueState.value,
         onValueChange = { nextValue -> valueState.value = nextValue },
         label = { Text(text = labelId, style = MaterialTheme.typography.labelLarge) },
@@ -47,6 +53,6 @@ fun DeclareInputField(
         textStyle = TextStyle(fontSize = 18.sp),
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
         keyboardActions = onAction,
-        colors = OutlinedTextFieldDefaults.colors(MaterialTheme.colorScheme.onBackground)
+        colors = colors
     )
 }
