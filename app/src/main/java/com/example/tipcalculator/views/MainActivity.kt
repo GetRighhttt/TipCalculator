@@ -1,7 +1,6 @@
 package com.example.tipcalculator.views
 
 import android.content.ContentValues.TAG
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -21,13 +20,14 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -116,6 +116,8 @@ fun BillForm(
         totalBillState.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val textInput = remember { mutableIntStateOf(1) }
+
     // start of view
     Surface(
         modifier = Modifier
@@ -158,12 +160,31 @@ fun BillForm(
                     ) {
                         RoundIconButton(
                             imageVector = Icons.Default.RemoveCircle,
-                            onClick = { /*TODO*/ }
+                            onClick = {
+                                if (textInput.intValue >= 1) {
+                                    textInput.intValue -= 1
+                                } else {
+                                    textInput.intValue = 0
+                                }
+                            },
                         )
-                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = "${textInput.intValue}",
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 9.dp, end = 9.dp)
+                        )
+
                         RoundIconButton(
                             imageVector = Icons.Default.AddCircle,
-                            onClick = { /*TODO*/ }
+                            onClick = {
+                                if (textInput.intValue <= 20) {
+                                    textInput.intValue += 1
+                                } else {
+                                    textInput.intValue
+                                }
+                            }
                         )
                     }
                 }
