@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +24,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,17 +83,16 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
     }
 }
 
-@ExperimentalComposeUiApi
+@ExperimentalComposeUiApi // necessary for keybaord controller
 @Preview(showBackground = true)
 @Composable
 fun MainContent() {
     // state holders
     val totalBillState = remember { mutableStateOf("") }
     val validInputState = remember(totalBillState.value) {
-        // remove excessive spaces
         totalBillState.value.trim().isNotEmpty()
     }
-
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // start of view
     Surface(
@@ -115,6 +114,7 @@ fun MainContent() {
                 isSingleLine = true,
                 onAction = KeyboardActions {
                     if(!validInputState) return@KeyboardActions
+                    keyboardController?.hide()
                 }
             )
         }
