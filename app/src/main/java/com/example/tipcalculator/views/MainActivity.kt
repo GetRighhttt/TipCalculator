@@ -51,8 +51,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApp {
-                Column {
+                Column(
+                    modifier = Modifier.padding(
+                        top = 20.dp,
+                        start = 10.dp,
+                        end = 10.dp
+                    )
+                ) {
                     TopHeader()
+                    Spacer(modifier = Modifier.height(10.dp))
+                    MainContent()
                 }
             }
         }
@@ -196,7 +204,7 @@ fun BillForm(
                 Text(text = "$33.00", modifier = Modifier.align(Alignment.CenterVertically))
             }
             Column(
-                modifier = Modifier.padding(top = 10.dp, start = 5.dp, end = 5.dp),
+                modifier = Modifier.padding(top = 20.dp, start = 5.dp, end = 5.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -212,7 +220,10 @@ fun BillForm(
                     },
                     steps = 5,
                     enabled = true,
-                    colors = SliderDefaults.colors(Color(0xFFFE9D7D))
+                    colors = SliderDefaults.colors(Color(0xFFFE9D7D)),
+                    onValueChangeFinished = {
+                        Log.d(TAG, "BillForm Method Finished...")
+                    }
                 )
             }
 //            } else {
