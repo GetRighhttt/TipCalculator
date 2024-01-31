@@ -117,6 +117,7 @@ fun BillForm(
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     val textInput = remember { mutableIntStateOf(1) }
+    val validTextInput = textInput.intValue >= 1
 
     // start of view
     Surface(
@@ -161,7 +162,7 @@ fun BillForm(
                         RoundIconButton(
                             imageVector = Icons.Default.RemoveCircle,
                             onClick = {
-                                if (textInput.intValue >= 1) {
+                                if (validTextInput) {
                                     textInput.intValue -= 1
                                 } else {
                                     textInput.intValue = 0
@@ -179,11 +180,7 @@ fun BillForm(
                         RoundIconButton(
                             imageVector = Icons.Default.AddCircle,
                             onClick = {
-                                if (textInput.intValue <= 20) {
-                                    textInput.intValue += 1
-                                } else {
-                                    textInput.intValue
-                                }
+                                textInput.intValue += 1
                             }
                         )
                     }
