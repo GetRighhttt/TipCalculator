@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,12 +23,10 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     )
                 ) {
                     TopHeader()
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(5.dp))
                     MainContent()
                 }
             }
@@ -80,9 +77,10 @@ fun MyApp(appContent: @Composable () -> Unit) {
 }
 
 @Composable
-fun TopHeader(totalPerPerson: Double = 0.0) {
+fun TopHeader(totalPerPerson: Double = 140.0) {
     Surface(
         modifier = Modifier
+            .padding(10.dp)
             .fillMaxWidth()
             .height(150.dp)
             .clip(CircleShape.copy(all = CornerSize(15.dp))),
@@ -128,8 +126,8 @@ fun BillForm(
         totalBillState.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val textInput = remember { mutableIntStateOf(1) }
-    val validTextInput = textInput.intValue >= 1
+    val splitByInput = remember { mutableIntStateOf(1) }
+    val rangeValueSet = IntRange(1, 30)
     val sliderPositionState = remember { mutableFloatStateOf(0f) }
 
     // start of view
@@ -172,19 +170,17 @@ fun BillForm(
                     modifier = Modifier.padding(horizontal = 3.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
+                    val isValidSplitInput = splitByInput.intValue > 1
                     RoundIconButton(
                         imageVector = Icons.Default.RemoveCircle,
                         onClick = {
-                            if (validTextInput) {
-                                textInput.intValue -= 1
-                            } else {
-                                textInput.intValue = 0
-                            }
+                            splitByInput.intValue =
+                                if (isValidSplitInput) splitByInput.intValue - 1 else 1
                         },
                     )
 
                     Text(
-                        text = "${textInput.intValue}",
+                        text = "${splitByInput.intValue}",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(start = 9.dp, end = 9.dp)
@@ -193,7 +189,7 @@ fun BillForm(
                     RoundIconButton(
                         imageVector = Icons.Default.AddCircle,
                         onClick = {
-                            textInput.intValue += 1
+                            if(splitByInput.intValue < rangeValueSet.last) splitByInput.intValue += 1
                         }
                     )
                 }
