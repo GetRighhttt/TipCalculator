@@ -23,10 +23,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -96,7 +98,7 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
     }
 }
 
-@Preview
+//@Preview
 @Composable
 fun MainContent() {
     BillForm() { billAmount ->
@@ -118,6 +120,7 @@ fun BillForm(
     val keyboardController = LocalSoftwareKeyboardController.current
     val textInput = remember { mutableIntStateOf(1) }
     val validTextInput = textInput.intValue >= 1
+    val sliderPositionState = remember { mutableFloatStateOf(0f) }
 
     // start of view
     Surface(
@@ -144,60 +147,78 @@ fun BillForm(
                     keyboardController?.hide()
                 }
             )
-            if (validInputState) {
+//            if (validInputState) {
+            Row(
+                modifier = Modifier.padding(5.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = "Split",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                )
+                Spacer(modifier = Modifier.width(120.dp))
+
                 Row(
-                    modifier = Modifier.padding(5.dp),
-                    horizontalArrangement = Arrangement.Start
+                    modifier = Modifier.padding(horizontal = 3.dp),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Text(
-                        text = "Split",
-                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
-                    )
-                    Spacer(modifier = Modifier.width(120.dp))
-
-                    Row(
-                        modifier = Modifier.padding(horizontal = 3.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        RoundIconButton(
-                            imageVector = Icons.Default.RemoveCircle,
-                            onClick = {
-                                if (validTextInput) {
-                                    textInput.intValue -= 1
-                                } else {
-                                    textInput.intValue = 0
-                                }
-                            },
-                        )
-
-                        Text(
-                            text = "${textInput.intValue}",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(start = 9.dp, end = 9.dp)
-                        )
-
-                        RoundIconButton(
-                            imageVector = Icons.Default.AddCircle,
-                            onClick = {
-                                textInput.intValue += 1
+                    RoundIconButton(
+                        imageVector = Icons.Default.RemoveCircle,
+                        onClick = {
+                            if (validTextInput) {
+                                textInput.intValue -= 1
+                            } else {
+                                textInput.intValue = 0
                             }
-                        )
-                    }
+                        },
+                    )
+
+                    Text(
+                        text = "${textInput.intValue}",
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 9.dp, end = 9.dp)
+                    )
+
+                    RoundIconButton(
+                        imageVector = Icons.Default.AddCircle,
+                        onClick = {
+                            textInput.intValue += 1
+                        }
+                    )
                 }
-            } else {
-                Box {}
             }
+            Row(modifier = Modifier.padding(6.dp)) {
+                Text(text = "Tip", modifier = Modifier.align(Alignment.CenterVertically))
+                Spacer(modifier = Modifier.width(182.dp))
+                Text(text = "$33.00", modifier = Modifier.align(Alignment.CenterVertically))
+            }
+            Column(
+                modifier = Modifier.padding(top = 10.dp, start = 5.dp, end = 5.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "33%")
+                Spacer(modifier = Modifier.height(20.dp))
+                // Slider
+                Slider(value = sliderPositionState.value, onValueChange = { newVal ->
+                    sliderPositionState.floatValue = newVal
+                    Log.d(TAG, "New Value: $newVal")
+                })
+            }
+//            } else {
+//                Box {}
+//            }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TipCalculatorTheme {
-        MyApp {
-            TopHeader()
-        }
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    TipCalculatorTheme {
+//        MyApp {
+//            TopHeader()
+//        }
+//    }
+//}
