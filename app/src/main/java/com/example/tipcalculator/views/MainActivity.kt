@@ -48,7 +48,7 @@ fun MyApp(appContent: @Composable () -> Unit) {
     }
 }
 
-@Preview(showBackground = false)
+@Preview(showBackground = true)
 @Composable
 fun TopHeader(totalPerPerson: Double = 0.0) {
     Surface(
