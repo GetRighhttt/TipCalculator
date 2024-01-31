@@ -3,6 +3,7 @@ package com.example.tipcalculator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,7 +51,7 @@ fun MyApp(appContent: @Composable () -> Unit) {
     }
 }
 
-@Preview(showBackground = false)
+//@Preview(showBackground = false)
 @Composable
 fun TopHeader(totalPerPerson: Double = 0.0) {
     Surface(
@@ -67,9 +69,12 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
         ) {
             // format the number of digits to display
             val totalDigits = "%.2f".format(totalPerPerson)
-            Text(text = "Total Per Person:", style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium)
-            Text(text = "$$totalDigits", style = MaterialTheme.typography.displaySmall,
+            Text(
+                text = "Total Per Person:", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = "$$totalDigits", style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -78,15 +83,33 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
 
 @Preview(showBackground = true)
 @Composable
-fun DoSomething() {}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TipCalculatorTheme {
-        MyApp {
-            TopHeader()
+fun MainContent() {
+    Surface(
+        modifier = Modifier
+            .padding(2.dp)
+            .fillMaxWidth()
+            .height(240.dp),
+        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+        border = BorderStroke(width = 3.dp, color = Color(0xFFFE9D7D))
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp)
+        ) {
+            Text(
+                text = "Tip Calculator", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }
+
+
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    TipCalculatorTheme {
+//        MyApp {
+//            TopHeader()
+//        }
+//    }
+//}
