@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MonetizationOn
+import androidx.compose.material.icons.sharp.AttachMoney
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -15,11 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun InputField(
+fun DeclareInputField(
     modifier: Modifier = Modifier, // optional modifier
     valueState: MutableState<String>,
     labelId: String,
@@ -33,17 +35,16 @@ fun InputField(
         modifier = modifier.padding(bottom = 10.dp, start = 10.dp, end = 10.dp),
         value = valueState.value,
         onValueChange = { nextValue -> valueState.value = nextValue },
-        label = { Text(text = labelId) },
+        label = { Text(text = labelId, style = MaterialTheme.typography.labelLarge) },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Rounded.MonetizationOn,
+                imageVector = Icons.Sharp.AttachMoney,
                 contentDescription = "Dollar Sign"
             )
         },
         singleLine = isSingleLine,
-        enabled = true,
+        enabled = enabled,
         textStyle = TextStyle(fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground),
-        readOnly = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
         keyboardActions = onAction
     )
