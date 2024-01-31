@@ -27,6 +27,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -125,10 +126,14 @@ fun BillForm(
     val validInputState = remember(totalBillState.value) {
         totalBillState.value.trim().isNotEmpty()
     }
-    val keyboardController = LocalSoftwareKeyboardController.current
     val splitByInput = remember { mutableIntStateOf(1) }
-    val rangeValueSet = IntRange(1, 30)
     val sliderPositionState = remember { mutableFloatStateOf(0f) }
+    val tipAmountState = remember { mutableDoubleStateOf(0.0) }
+
+    // stateless variables
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val rangeValueSet = IntRange(1, 30)
+    val tipPercentage = (sliderPositionState.floatValue * 100).toInt()
 
     // start of view
     Surface(
@@ -189,7 +194,7 @@ fun BillForm(
                     RoundIconButton(
                         imageVector = Icons.Default.AddCircle,
                         onClick = {
-                            if(splitByInput.intValue < rangeValueSet.last) splitByInput.intValue += 1
+                            if (splitByInput.intValue < rangeValueSet.last) splitByInput.intValue += 1
                         }
                     )
                 }
@@ -197,24 +202,29 @@ fun BillForm(
             Row(modifier = Modifier.padding(6.dp)) {
                 Text(text = "Tip", modifier = Modifier.align(Alignment.CenterVertically))
                 Spacer(modifier = Modifier.width(182.dp))
-                Text(text = "$33.00", modifier = Modifier.align(Alignment.CenterVertically))
+
+                // set value of tip
+                Text(text = "${tipAmountState.doubleValue}", modifier = Modifier.align(Alignment.CenterVertically))
             }
             Column(
                 modifier = Modifier.padding(top = 20.dp, start = 5.dp, end = 5.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "33%")
+                Text(text = "$tipPercentage %")
                 Spacer(modifier = Modifier.height(20.dp))
                 // Slider
                 Slider(
                     modifier = Modifier.padding(start = 10.dp),
                     value = sliderPositionState.floatValue,
                     onValueChange = { newVal ->
+                        // set state for tips and slider
                         sliderPositionState.floatValue = newVal
+                        tipAmountState.doubleValue =
+                            calculateTipTotalAmount(totalBillState.value.toDouble(), tipPercentage)
                         Log.d(TAG, "New Value: $newVal")
                     },
-                    steps = 5,
+                    steps = 12,
                     enabled = true,
                     colors = SliderDefaults.colors(Color(0xFFFE9D7D)),
                     onValueChangeFinished = {
@@ -226,6 +236,14 @@ fun BillForm(
 //                Box {}
 //            }
         }
+    }
+}
+
+fun calculateTipTotalAmount(totalBill: Double, tipPercentage: Int): Double {
+    return if (totalBill > 1 && totalBill.toString().isNotEmpty()) {
+        (totalBill * tipPercentage) / 100
+    } else {
+        0.0
     }
 }
 
