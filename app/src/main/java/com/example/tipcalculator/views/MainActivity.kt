@@ -1,18 +1,29 @@
 package com.example.tipcalculator.views
 
+import android.content.ContentValues.TAG
+import android.graphics.drawable.Icon
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,13 +40,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tipcalculator.components.DeclareInputField
 import com.example.tipcalculator.ui.theme.TipCalculatorTheme
+import com.example.tipcalculator.widgets.RoundIconButton
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyApp {
-                TopHeader()
+                Column {
+                    TopHeader()
+                }
             }
         }
     }
@@ -83,28 +96,38 @@ fun TopHeader(totalPerPerson: Double = 0.0) {
     }
 }
 
-@ExperimentalComposeUiApi // necessary for keybaord controller
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun MainContent() {
+    BillForm() { billAmount ->
+        Log.d(TAG, "Main Content: $billAmount")
+    }
+}
+
+@Preview
+@Composable
+fun BillForm(
+    modifier: Modifier = Modifier,
+    onValueChanged: (String) -> Unit = {} //callback function
+) {
     // state holders
     val totalBillState = remember { mutableStateOf("") }
     val validInputState = remember(totalBillState.value) {
         totalBillState.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
-
     // start of view
     Surface(
         modifier = Modifier
             .padding(2.dp)
-            .fillMaxWidth()
-            .height(240.dp),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
         border = BorderStroke(width = 3.dp, color = Color(0xFFFE9D7D))
     ) {
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
         ) {
             // method from components package
             DeclareInputField(
@@ -113,10 +136,40 @@ fun MainContent() {
                 enabled = true,
                 isSingleLine = true,
                 onAction = KeyboardActions {
-                    if(!validInputState) return@KeyboardActions
+                    if (!validInputState) return@KeyboardActions
+                    onValueChanged(totalBillState.value.trim())
                     keyboardController?.hide()
                 }
             )
+            if (validInputState) {
+                Row(
+                    modifier = Modifier.padding(5.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Split",
+                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                    )
+                    Spacer(modifier = Modifier.width(120.dp))
+
+                    Row(
+                        modifier = Modifier.padding(horizontal = 3.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        RoundIconButton(
+                            imageVector = Icons.Default.RemoveCircle,
+                            onClick = { /*TODO*/ }
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        RoundIconButton(
+                            imageVector = Icons.Default.AddCircle,
+                            onClick = { /*TODO*/ }
+                        )
+                    }
+                }
+            } else {
+                Box {}
+            }
         }
     }
 }
