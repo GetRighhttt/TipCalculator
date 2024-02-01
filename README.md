@@ -1,2 +1,2 @@
 # TipCalculator
-JetTipCalculator from Udemy course.
+Tip Calculator to work on learning Compose more.
