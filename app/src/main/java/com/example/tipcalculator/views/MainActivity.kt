@@ -29,7 +29,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableDoubleState
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -79,11 +81,16 @@ fun MainContent() {
     val tipAmountState = remember { mutableDoubleStateOf(0.0) }
     val totalPerPersonState = remember { mutableDoubleStateOf(0.0) }
     val rangeValueSet = IntRange(1, 30)
+    val totalBillState = remember { mutableStateOf("") }
+    val sliderPositionState = remember { mutableFloatStateOf(0f) }
+
     BillForm(
         splitByState = splitByState,
         tipAmountState = tipAmountState,
         totalPerPersonState = totalPerPersonState,
-        rangeValueSet = rangeValueSet
+        rangeValueSet = rangeValueSet,
+        totalBillState = totalBillState,
+        sliderPositionState = sliderPositionState
     ) { billAmount ->
         Log.d(TAG, "Main Content: $billAmount")
     }
@@ -129,15 +136,13 @@ fun BillForm(
     splitByState: MutableIntState,
     tipAmountState: MutableDoubleState,
     totalPerPersonState: MutableDoubleState,
+    totalBillState: MutableState<String>,
+    sliderPositionState: MutableFloatState,
     onValueChanged: (String) -> Unit = {} //callback function
 ) {
     // state holders
-    val totalBillState = remember { mutableStateOf("") }
     val validInputState =
         remember(totalBillState.value) { totalBillState.value.trim().isNotEmpty() }
-    val sliderPositionState = remember { mutableFloatStateOf(0f) }
-
-    // stateless variables
     val keyboardController = LocalSoftwareKeyboardController.current
     val tipPercentage = (sliderPositionState.floatValue * 100).toInt()
 
@@ -281,7 +286,7 @@ fun BillForm(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun AppPreview() {
     TipCalculatorTheme {
         MyApp {
             MainContent()
