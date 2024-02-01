@@ -146,14 +146,14 @@ fun BillForm(
     val keyboardController = LocalSoftwareKeyboardController.current
     val tipPercentage = (sliderPositionState.floatValue * 100).toInt()
 
-    val totalPersonStateSetter = {
+    val totalPersonStateSetter: () -> Unit = {
         totalPerPersonState.doubleValue = calculateTotalPerPerson(
             totalBillState.value.toDouble(),
             splitByState.intValue,
             tipPercentage
         )
     }
-    val tipAmountStateSetter = {
+    val tipAmountStateSetter: () -> Unit = {
         tipAmountState.doubleValue =
             calculateTipTotalTip(
                 totalBillState.value.toDouble(),
