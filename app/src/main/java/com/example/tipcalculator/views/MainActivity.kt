@@ -44,11 +44,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.tipcalculator.components.DeclareInputField
 import com.example.tipcalculator.ui.theme.TipCalculatorTheme
 import com.example.tipcalculator.util.calculateTipTotalTip
 import com.example.tipcalculator.util.calculateTotalPerPerson
+import com.example.tipcalculator.util.invoke
 import com.example.tipcalculator.widgets.RoundIconButton
 
 class MainActivity : ComponentActivity() {
@@ -144,28 +146,28 @@ fun BillForm(
     val validInputState =
         remember(totalBillState.value) { totalBillState.value.trim().isNotEmpty() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val tipPercentage = (sliderPositionState.floatValue * 100).toInt()
+    val tipPercentage: () -> Int = { (sliderPositionState.floatValue * 100).toInt() }
 
-    val totalPersonStateSetter: () -> Unit = {
-        totalPerPersonState.doubleValue = calculateTotalPerPerson(
+    val totalPersonStateSetter: () -> Double = {
+        calculateTotalPerPerson(
             totalBillState.value.toDouble(),
             splitByState.intValue,
-            tipPercentage
+            tipPercentage.invoke()
         )
     }
-    val tipAmountStateSetter: () -> Unit = {
-        tipAmountState.doubleValue =
+    val tipAmountStateSetter: () -> Double = {
             calculateTipTotalTip(
                 totalBillState.value.toDouble(),
-                tipPercentage
+                tipPercentage.invoke()
             )
     }
 
     Column(
         modifier = modifier.padding(
-            top = 20.dp,
-            start = 10.dp,
-            end = 10.dp
+            // using Util.kt operator fun Int.invoke() method for dp.
+            top = 20(),
+            start = 10(),
+            end = 10()
         )
     ) {
         // call top header before creating bottom layer
@@ -254,7 +256,7 @@ fun BillForm(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "$tipPercentage %")
+                        Text(text = "${tipPercentage.invoke()} %")
                         Spacer(modifier = modifier.height(20.dp))
                         // Slider
                         Slider(
@@ -263,8 +265,8 @@ fun BillForm(
                             onValueChange = { newVal ->
                                 // when values is changed calculate slider, tip, and per person value
                                 sliderPositionState.floatValue = newVal
-                                tipAmountStateSetter()
-                                totalPersonStateSetter()
+                                tipAmountState.doubleValue = tipAmountStateSetter.invoke()
+                                totalPerPersonState.doubleValue = totalPersonStateSetter.invoke()
                                 Log.d(TAG, "New Value: $newVal")
                             },
                             steps = 12,
