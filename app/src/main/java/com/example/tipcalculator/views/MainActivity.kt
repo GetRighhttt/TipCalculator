@@ -146,6 +146,21 @@ fun BillForm(
     val keyboardController = LocalSoftwareKeyboardController.current
     val tipPercentage = (sliderPositionState.floatValue * 100).toInt()
 
+    val totalPersonStateSetter: () -> Unit = {
+        totalPerPersonState.doubleValue = calculateTotalPerPerson(
+            totalBillState.value.toDouble(),
+            splitByState.intValue,
+            tipPercentage
+        )
+    }
+    val tipAmountStateSetter: () -> Unit = {
+        tipAmountState.doubleValue =
+            calculateTipTotalTip(
+                totalBillState.value.toDouble(),
+                tipPercentage
+            )
+    }
+
     Column(
         modifier = modifier.padding(
             top = 20.dp,
@@ -203,11 +218,7 @@ fun BillForm(
                                     //dynamically adjust values
                                     splitByState.intValue =
                                         if (isValidSplitInput) splitByState.intValue - 1 else 1
-                                    totalPerPersonState.doubleValue = calculateTotalPerPerson(
-                                        totalBillState.value.toDouble(),
-                                        splitByState.intValue,
-                                        tipPercentage
-                                    )
+                                    totalPersonStateSetter()
                                 },
                             )
 
@@ -223,11 +234,7 @@ fun BillForm(
                                 onClick = {
                                     //dynamically adjusts values
                                     if (splitByState.intValue < rangeValueSet.last) splitByState.intValue += 1
-                                    totalPerPersonState.doubleValue = calculateTotalPerPerson(
-                                        totalBillState.value.toDouble(),
-                                        splitByState.intValue,
-                                        tipPercentage
-                                    )
+                                    totalPersonStateSetter()
                                 }
                             )
                         }
@@ -261,11 +268,7 @@ fun BillForm(
                                         totalBillState.value.toDouble(),
                                         tipPercentage
                                     )
-                                totalPerPersonState.doubleValue = calculateTotalPerPerson(
-                                    totalBillState.value.toDouble(),
-                                    splitByState.intValue,
-                                    tipPercentage
-                                )
+                                totalPersonStateSetter()
                                 Log.d(TAG, "New Value: $newVal")
                             },
                             steps = 12,
